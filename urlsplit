@@ -1,0 +1,13 @@
+var url = window.location.href
+
+var source_medium = url.split("?");
+
+var parameters = source_medium[1];
+
+
+if (url.indexOf("utm_source")){
+
+
+	console.log(url.indexOf("utm_source").text());
+
+}
