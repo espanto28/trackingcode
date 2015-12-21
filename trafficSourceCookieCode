@@ -1,0 +1,215 @@
+var source = trafficSource();
+ 
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+    var source = document.referrer;
+}
+
+setCookie("Traffic Source Cookie", source,10)
+
+function getCookie(name)
+  {
+    var re = new RegExp(name + "=([^;]+)");
+    var value = re.exec(document.cookie);
+    return (value != null) ? unescape(value[1]) : null;
+  }
+
+ dataLayer.push( "Cookie Traffic Source is " +getCookie("Traffic Source Cookie"));
+ 
+
+ function trafficSource(trafficType){
+
+    var trafficType;
+
+        //set traffic sources to variables
+        /*var sourceSearchEngine = searchEngine();
+         var sourceSocialNetwork = socialNetwork();
+        var sourcePaidSearch = paidSearch(); */
+
+    // get what kind of referrer
+    var trafficReferrer = document.referrer;
+    var trafficURL = document.URL;
+
+    if(trafficURL.indexOf("gclid","Bing") >- 1 || trafficReferrer.indexOf("bing")>-1){
+
+
+         trafficType = paidSearch();
+
+       alert("paidSearch");
+
+    } else if(trafficReferrer.indexOf("google","bing") >- 1){
+
+
+        trafficType = searchEngine();
+      alert("searchEngine");
+
+    } else if (trafficReferrer.indexOf("facebook","googleplus", "twitter", "t.co/", "linkedin", "pinterest")>- 1){
+
+        trafficType = socialNetwork();
+        alert("socialNetwork");
+
+    } else if (trafficReferrer.indexOf(" ")>-1){
+
+        trafficType = directSource();
+        alert("direct");
+    }else {
+
+
+        trafficType = document.referrer;
+    }
+
+    //Return the trafficType which is the function that will get source
+    return trafficType;
+   // alert("trafficType");
+
+}
+ 
+//setCookie("trafficSource",1,30)
+ 
+ 
+//search engine source
+ 
+function searchEngine (referrer){
+ 
+            var search = document.referrer;
+            var bing = "bing";
+            var google ="google";
+            var referrer;
+ 
+            if (search.indexOf(bing)> -1){
+ 
+ 
+                        //alert(bing);
+                        referrer = bing;
+            }else{
+ 
+                       // alert(google);
+                        referrer = google;
+            }
+ 
+            return referrer;
+           // alert("Search Engine: " + referrer);
+ 
+           
+}
+ 
+ 
+//search social network
+ 
+function socialNetwork (referrer){
+ 
+ 
+ 
+            var search = document.referrer;
+            var facebook ="facebook";
+            var twitter = "twitter";
+            var googlePlus = "google plus";
+            var pinterest ="pinterest";
+            var linkedin = "linkedin";
+            var referrer;
+ 
+            if(search.indexOf(facebook)> -1){
+ 
+                       // alert(facebook);
+                        referrer = facebook;
+ 
+            }else if (search.indexOf(twitter)> -1 || search.indexOf("t.co/") >-1){
+ 
+                       // alert(twitter);
+                        referrer = twitter;
+            }else if (search.indexOf(pinterest)> -1){
+ 
+ 
+                        //alert(pinterest);
+                        referrer = pinterest;
+            }else if (search.indexOf(linkedin) >- 1){
+
+                        //alert(linkedin);
+                        referrer = linkedin;
+
+
+            }else if (search.indexOf(googlePlus) >-1){
+ 
+                       // alert(googlePlus);
+                        referrer = googlePlus;
+            } else{
+
+
+               // alert(document.referrer);
+                referrer = document.referrer;
+
+            }
+ 
+            return referrer;
+           // alert("Social Media Network: " + referrer)
+}
+ 
+ 
+// search for paid search
+ 
+function paidSearch(referrer){
+ 
+ 
+            var paidCampaign = document.URL;
+            var campaignReferrer = document.referrer;
+            var referrer;
+
+            var googleAd = "gclid";
+            var justGoogle = "google";
+            var justBing = "bing";
+            var bingAd = "Bing";
+
+            if (paidCampaign.indexOf(googleAd) >- 1 || campaignReferrer.indexOf(justGoogle) >-1){
+
+
+                googleAd = "Google Pay Per Click";
+               // alert(googleAd);
+                //referrer = paidCampaign; < original code but trying the code on the bottom>
+                referrer = googleAd + urlSpilt();
+                alert(referrer);
+
+            }
+            if (paidCampaign.indexOf(bingAd)>- 1 || campaignReferrer.indexOf(justBing) >-1){
+
+
+                bingAd = "Bing Pay Per Click";
+                //alert(bingAd);
+                referrer = bingAd + urlSpilt();
+            }
+
+            return referrer;
+          //  alert("The paid ad is: " + googleAd);
+}
+
+function directSource(referrer){
+
+
+        var directVistor = document.referrer;
+
+        if(directVistor =="" || directVistor== null){
+
+
+            referrer = "Direct";
+
+            alert("Direct");
+        }
+
+        return referrer;
+
+}
+
+function urlSpilt(url){
+
+    var url;
+    var getURL = document.referrer;
+    //var testURL = "http://www.franciscoignacioquintana.com/?utm_source=testSource&utm_medium=testMedium&utm_campaign=testName";
+    var getURL = getURL.split("=");
+    getURL = getURL[1].split("utm_source");
+
+    url = getURL;
+
+    return url;
+}
