@@ -1,5 +1,4 @@
 var source = trafficSource();
- 
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -7,209 +6,333 @@ function setCookie(cname, cvalue, exdays) {
     document.cookie = cname + "=" + cvalue + "; " + expires;
     var source = document.referrer;
 }
-
-setCookie("Traffic Source Cookie", source,10)
-
+ 
+ 
 function getCookie(name)
   {
     var re = new RegExp(name + "=([^;]+)");
     var value = re.exec(document.cookie);
     return (value != null) ? unescape(value[1]) : null;
   }
-
- dataLayer.push( "Cookie Traffic Source is " +getCookie("Traffic Source Cookie"));
  
-
- function trafficSource(trafficType){
-
+   function checkCookie() {
+            var verifyCookie = getCookie("Traffic Source Cookie");
+ 
+            if (verifyCookie != null ){
+ 
+                //alert("there is a cookie");
+ 
+                return "";
+            }else{
+ 
+ 
+               setCookie("Traffic Source Cookie", source, 30);
+ 
+               //alert("new cookie made");
+            }
+ 
+    }
+ 
+ 
+checkCookie();
+  var trafficSourceValue = getCookie("Traffic Source Cookie"); // delete if doesnt work
+//dataLayer.push( "Cookie Traffic Source is " +getCookie("Traffic Source Cookie"));
+ 
+function trafficSource(trafficType){
+ 
     var trafficType;
-
+ 
         //set traffic sources to variables
         /*var sourceSearchEngine = searchEngine();
          var sourceSocialNetwork = socialNetwork();
         var sourcePaidSearch = paidSearch(); */
-
+ 
     // get what kind of referrer
     var trafficReferrer = document.referrer;
     var trafficURL = document.URL;
-
-    if(trafficURL.indexOf("gclid","Bing") >- 1 || trafficReferrer.indexOf("bing")>-1){
-
-
+   
+    if(trafficURL.indexOf("gclid") > -1) {
+ 
+ 
          trafficType = paidSearch();
-
-       alert("paidSearch");
-
-    } else if(trafficReferrer.indexOf("google","bing") >- 1){
-
-
-        trafficType = searchEngine();
-      alert("searchEngine");
-
-    } else if (trafficReferrer.indexOf("facebook","googleplus", "twitter", "t.co/", "linkedin", "pinterest")>- 1){
-
-        trafficType = socialNetwork();
-        alert("socialNetwork");
-
-    } else if (trafficReferrer.indexOf(" ")>-1){
-
-        trafficType = directSource();
-        alert("direct");
-    }else {
-
-
-        trafficType = document.referrer;
+ 
+ 
+       //alert("paidSearch google");
+ 
+    } else if (trafficURL.indexOf("bing") >-1 &&(trafficURL.indexOf("ppc")> -1) || (trafficURL.indexOf("cpc") >-1)){
+ 
+ 
+ 
+        trafficType = paidSearch();
+         //alert("paidSearch bing");
     }
-
+ 
+      else if((trafficReferrer.indexOf("plus.url.google.com")<= 0) && trafficReferrer.indexOf("google")>-1 || trafficReferrer.indexOf("bing")>-1 || trafficReferrer.indexOf("baidu") >-1 || trafficReferrer.indexOf("yahoo") > -1 && (trafficURL.indexOf("ppc") < 0)){
+ 
+ 
+        trafficType = searchEngine();
+        //alert("searchEngine");
+ 
+ 
+//(trafficReferrer.indexOf("facebook","googleplus", "twitter", "t.co/", "linkedin", "pinterest","reddit","disqus","blogspot.co.uk") >-1
+    } else if ((trafficReferrer.indexOf("facebook")>-1) || (trafficReferrer.indexOf("plus.url.google.com")>-1) || (trafficReferrer.indexOf("t.co/")>-1) || (trafficReferrer.indexOf("linkedin")>-1) || (trafficReferrer.indexOf("reddit")>-1) || (trafficReferrer.indexOf("disqus")>-1) || (trafficReferrer.indexOf("blogspot.co.uk")>-1) || (trafficReferrer.indexOf("t.umblr")>-1)) {
+ 
+        trafficType = socialNetwork();
+        //alert("socialNetwork");
+ 
+    } else if (trafficReferrer.indexOf("")>-0){
+ 
+        trafficType = directSource();
+        //alert("direct");
+    }else if (trafficURL.indexOf("display") >-1 || trafficURL.indexOf("Display") >-1){
+ 
+ 
+        trafficType = display();
+        //alert("display");
+    }else if (trafficReferrer === "" || trafficReferrer === null){
+ 
+            trafficType = "Direct";
+ 
+    }else {
+ 
+           
+ 
+            //var hostnameReturn = hostname.split("www.");
+ 
+          
+             var returnReferrer = document.referrer.match(/https?:\/\/([^\/]*)(?:\/|$)/i)[1].replace(/www\./, "");
+            // do I need this snippet
+            trafficType =  returnReferrer + "/Referral" ;
+ 
+        //alert("Hostname Referral");
+    }
+ 
     //Return the trafficType which is the function that will get source
     return trafficType;
    // alert("trafficType");
-
-}
  
+}
 //setCookie("trafficSource",1,30)
  
- 
 //search engine source
- 
 function searchEngine (referrer){
- 
             var search = document.referrer;
             var bing = "bing";
             var google ="google";
+            var yahoo = "yahoo";
+            var ask = "ask";
+            var msn = "msn";
+            var baidu = "baidu";
             var referrer;
- 
             if (search.indexOf(bing)> -1){
  
- 
                         //alert(bing);
-                        referrer = bing;
-            }else{
+                        referrer = bing + " organic";
+            } else if (search.indexOf(yahoo)>-1){
  
-                       // alert(google);
-                        referrer = google;
+                       // alert(bing);
+                        referrer = yahoo + " organic";
+            } else if (search.indexOf(ask)>-1){
+ 
+                    referrer = ask + " organic";
+ 
+            } else if (search.indexOf(msn)>-1){
+ 
+                       // alert(bing);
+                        referrer = msn + " organic";
+            } else if (search.indexOf(baidu)>-1){
+ 
+                       // alert(baidu);
+                        referrer = baidu + " organic";
             }
- 
+             else{
+                       // alert(google);
+                        referrer = google + " organic";
+            }
             return referrer;
            // alert("Search Engine: " + referrer);
- 
            
 }
  
- 
 //search social network
- 
 function socialNetwork (referrer){
- 
  
  
             var search = document.referrer;
             var facebook ="facebook";
             var twitter = "twitter";
             var googlePlus = "google plus";
+            var googlePlus2 = "plus.url.google.com";
             var pinterest ="pinterest";
             var linkedin = "linkedin";
+            var tumblr = "t.umblr";
+            var reddit = "reddit";
+            //var beforeItsNews ="news";
+            var disquis = "disqus";
+            var blogger = "blogspot.co.uk";
+            //var StumbleUpon = "StumbleUpon";
             var referrer;
- 
             if(search.indexOf(facebook)> -1){
- 
                        // alert(facebook);
-                        referrer = facebook;
- 
+                        referrer = "Social/ " + facebook;
             }else if (search.indexOf(twitter)> -1 || search.indexOf("t.co/") >-1){
- 
                        // alert(twitter);
-                        referrer = twitter;
+                        referrer = "Social/ "+ twitter;
             }else if (search.indexOf(pinterest)> -1){
  
- 
                         //alert(pinterest);
-                        referrer = pinterest;
+                        referrer = "Social/ "+ pinterest;
             }else if (search.indexOf(linkedin) >- 1){
-
+ 
                         //alert(linkedin);
                         referrer = linkedin;
-
-
-            }else if (search.indexOf(googlePlus) >-1){
  
+ 
+            }else if (search.indexOf(googlePlus) >-1 || search.indexOf(googlePlus2) >-1){
                        // alert(googlePlus);
-                        referrer = googlePlus;
-            } else{
-
-
-               // alert(document.referrer);
-                referrer = document.referrer;
-
-            }
+                        referrer = "Social/ "+ googlePlus;
+            }else if (search.indexOf(tumblr) >-1){
+                       // alert(googlePlus);
+                        referrer ="Social/ "+ "tumblr";
+            }else if (search.indexOf(reddit) >-1){
+                       // alert(googlePlus);
+                        referrer = "Social/ " + reddit;
+            }else if (search.indexOf(disquis) >-1){
+                       //alert(disquis);
+                        referrer = "Social/ "+ disquis;
+            }else if (search.indexOf(blogger) >-1){
  
+ 
+                        blogger ="Blogger";
+                       //alert(blogger);
+                        referrer = "Social/ "+ blogger;
+            }else{
+ 
+ 
+               // alert(document.referrer);
+                referrer = "Referral: " + document.referrer;
+                alert("Check Cookie - Referrer");
+ 
+            }
             return referrer;
            // alert("Social Media Network: " + referrer)
 }
  
- 
 // search for paid search
- 
 function paidSearch(referrer){
- 
  
             var paidCampaign = document.URL;
             var campaignReferrer = document.referrer;
             var referrer;
-
+ 
             var googleAd = "gclid";
             var justGoogle = "google";
-            var justBing = "bing";
+            var justBing = "ppc";
             var bingAd = "Bing";
-
+ 
             if (paidCampaign.indexOf(googleAd) >- 1 || campaignReferrer.indexOf(justGoogle) >-1){
-
-
-                googleAd = "Google Pay Per Click";
+ 
+ 
+                googleAd = "Google/CPC ";
                // alert(googleAd);
                 //referrer = paidCampaign; < original code but trying the code on the bottom>
-                referrer = googleAd + urlSpilt();
+                referrer = googleAd;
                 alert(referrer);
-
+ 
             }
-            if (paidCampaign.indexOf(bingAd)>- 1 || campaignReferrer.indexOf(justBing) >-1){
-
-
-                bingAd = "Bing Pay Per Click";
+            if (paidCampaign.indexOf(bingAd)>- 1 || paidCampaign.indexOf(justBing) >-1){
+ 
+ 
+                bingAd = "Bing/CPC ";
                 //alert(bingAd);
-                referrer = bingAd + urlSpilt();
+                referrer = bingAd ;
             }
-
+ 
             return referrer;
           //  alert("The paid ad is: " + googleAd);
 }
-
+ 
 function directSource(referrer){
-
-
-        var directVistor = document.referrer;
-
-        if(directVistor =="" || directVistor== null){
-
-
+ 
+ 
+       var directVistor = document.referrer;
+ 
+ 
+        if(directVistor ==="" || directVistor === null ){
+ 
+ 
             referrer = "Direct";
-
-            alert("Direct");
+ 
+            //alert("Direct");
         }
-
+ 
         return referrer;
-
+ 
 }
-
-function urlSpilt(url){
-
-    var url;
-    var getURL = document.referrer;
-    //var testURL = "http://www.franciscoignacioquintana.com/?utm_source=testSource&utm_medium=testMedium&utm_campaign=testName";
-    var getURL = getURL.split("=");
-    getURL = getURL[1].split("utm_source");
-
-    url = getURL;
-
-    return url;
+ 
+function display(referrer){
+ 
+    var displayURL = document.URL;
+ 
+    var referrer;
+ 
+   
+    if(displayURL.indexOf("display") >- 1 || displayURL.indexOf("Display")>-1){
+ 
+        var returnDisplay = window.location.search.substring(1);
+ 
+        referrer =  "Display: " + returnDisplay;
+ 
+ 
+ 
+        //alert(referrer);
+ 
+        return referrer;
+    }
+ 
+ 
 }
+ 
+// function urlSpilt(url){
+//     // return utm_source and utm_medium if iti has it.
+//     var url;
+//     var getURL = document.URL;
+//     //var testURL = "http://www.franciscoignacioquintana.com/?utm_source=testSource&utm_medium=testMedium&utm_campaign=testName";
+//     var getURL = getURL.split("utm_source");
+//     getURL = getURL[1].split("utm_source");
+ 
+//     url = getURL;
+ 
+//     return url;
+// }
+ 
+//http://www.currencies.co.uk/?utm_source=testSource&utm_medium=testMedium&utm_campaign=testName
+ 
+ 
+function getQueryParam(par){
+ 
+  //var strURL = document.URL;#
+ 
+  var strURL = document.referrer;
+ 
+  var regParam = new RegExp("(?:\\?|&)" + par + "=([^&$]*)", "i");
+ 
+  var resExp = strURL.match(regParam);
+ 
+  if((typeof resExp == "object") && resExp && (resExp.length > 1)){
+ 
+    return resExp[1];
+ 
+  }
+  else{
+    return "";
+  }
+ 
+}
+ 
+ 
+//var hostname = window.location.hostname;
+ 
+//var hostnameReturn = hostname.split("www.");
+ 
+//var hostname2 = hostname.slice(4);
